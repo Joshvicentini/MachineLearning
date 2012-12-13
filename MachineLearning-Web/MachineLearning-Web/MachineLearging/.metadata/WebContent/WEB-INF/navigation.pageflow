@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13252949163951" configfile="/MachineLearning/WebContent/WEB-INF/navigation.xml">
+  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="946" id="pf13253022866083" outlinks="pf13253022866085" path="*"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/inicial/inicial.xhtml" x="338" y="562" id="pf132530228660819" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13253022866085" path="/pages/inicial/inicial.xhtml"/>
+  <links id="pf13253022866085" target="pf132530228660819" source="pf13253022866083" outcome="inicial"/>
+</pageflow:Pageflow>

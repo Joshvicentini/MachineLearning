@@ -1,0 +1,54 @@
+body{
+	margin:0px;
+	padding:0px;
+	font-size:14px;
+	font-family:Arial,Verdana,sans-serif;
+	background:none repeat scroll 0 0 #EDEDED;
+}
+
+button{
+	outline: 0 !important;
+}
+
+.clear{
+	clear: both;
+}
+
+.container{
+	width:900px;
+	margin:20px auto 0;
+}
+
+.superiorPanel{
+}
+
+.leftPanel{
+	margin:30px 0 0 0;
+	width:200px;
+	float:left;
+}
+
+.leftPanel .panel{
+	min-height: 500px;
+}
+
+.rightPanel{
+	margin: 30px 0 0;
+    width: 650px;
+	float:right;
+}
+
+.rightPanel .panel{
+	min-height: 500px;
+}
+
+::-webkit-input-placeholder {
+    color: #777777;
+}
+:-moz-placeholder {
+    color: #777777;
+}
+:-ms-input-placeholder {
+    color: #777777;
+}
+

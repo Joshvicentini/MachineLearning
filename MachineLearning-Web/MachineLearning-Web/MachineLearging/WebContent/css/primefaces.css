@@ -1,0 +1,33 @@
+.ui-widget{
+	font-size:12px !important;
+}
+
+.ui-inputfield{
+	box-shadow:none !important;
+}
+
+.ui-corner-all{
+	border-radius:0px !important;
+}
+
+.ui-toolbar.ui-widget-header{
+	padding:5px !important;
+}
+
+.ui-state-highlight .ui-icon-check{
+	background-image: url("/MachineLearning/javax.faces.resource/images/ui-icons_333333_256x240.png.xhtml?ln=primefaces-bootstrap") !important;
+}
+
+.ui-buttonset .ui-corner-left.ui-state-default{
+	border-bottom-left-radius: 0px !important;
+	border-top-left-radius:0px !important;
+}
+
+.ui-buttonset .ui-corner-right.ui-state-default{
+	border-bottom-right-radius:0px !important;
+	border-top-right-radius:0px !important;
+}
+
+.ui-widget-overlay{
+	background: #CDCDCD !important;
+}
