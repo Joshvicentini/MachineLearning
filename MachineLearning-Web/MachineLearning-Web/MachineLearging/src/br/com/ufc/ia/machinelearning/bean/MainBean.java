@@ -11,9 +11,13 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
+import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.ChartSeries;
 
+import br.com.ufc.ia.machinelearning.algorithm.Algorithm;
+import br.com.ufc.ia.machinelearning.algorithm.Point;
+import br.com.ufc.ia.machinelearning.enumeration.MethodEnum;
 import br.com.ufc.ia.machinelearning.model.FileData;
 
 @ManagedBean(name="mainBean") @ViewScoped
@@ -23,7 +27,7 @@ public class MainBean implements Serializable{
 
 	private static final String INICIAL = "inicial";
 	
-	private int selectedMethod = 1;
+	private int selectedMethod = 0;
 	private int selectedParameter = 1;
 	private int selectedGraphic = 1;
 	
@@ -31,13 +35,48 @@ public class MainBean implements Serializable{
 	private List<FileData> listDataModel;
 	private String nameColumn1;
 	private String nameColumn2;
+	
+	private boolean showChart;
+	
+	private Algorithm<List<Point>> algorithm;
+	private List<Point> listResultPoints;
 
+	private CartesianChartModel chartModel;
+	
 	public String prepareToShow(){
-		return INICIAL;
+		showChart = false;
+		return INICIAL;		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void execute(){
-		
+		String methodClassName = MethodEnum.values()[selectedMethod].getClassName();
+		try {
+			algorithm =  (Algorithm<List<Point>>) Class.forName("br.com.ufc.ia.machinelearning.algorithm."+methodClassName).newInstance();
+			List<Point> listPoints = new ArrayList<Point>();
+			for(FileData fileData:listDataModel){
+				listPoints.add(new Point(fileData.getValue1(), fileData.getValue2()));
+			}
+			algorithm.execute(listPoints, null);
+			listResultPoints = algorithm.getResult(); 
+			
+			ChartSeries chartSerie = new ChartSeries();
+			for(Point point : listResultPoints){
+				chartSerie.set(point.x, point.y);
+			}
+			chartModel.addSeries(chartSerie);
+			showChart = true;
+			
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void plot(){
@@ -57,14 +96,14 @@ public class MainBean implements Serializable{
 				listDataModel = new ArrayList<FileData>();
 				int numberOfColumns = 2;
 				line = item.readLine();
-				String nameColumns[] = line.split(";",-1);
+				String nameColumns[] = line.split(",",-1);
 				if(nameColumns.length == numberOfColumns){
 					nameColumn1 = String.valueOf(nameColumns[0]);
 					nameColumn2 = String.valueOf(nameColumns[1]);
 				}
 				Long i = 0L;
 				while((line = item.readLine()) != null){
-					String values[] = line.split(";",-1);
+					String values[] = line.split(",",-1);
 					if(values.length == numberOfColumns){
 						FileData fileData = new FileData(i);
 						fileData.setNameValue1(nameColumn1);
@@ -81,11 +120,6 @@ public class MainBean implements Serializable{
 			}
 		}
 	}
-	
-	public void rowEditListener(RowEditEvent event){
-		FileData fileData = (FileData) event.getObject();
-	}
-	
 	
 	public void setSelectedMethod(int selectedMethod){
 		this.selectedMethod = selectedMethod;
@@ -141,6 +175,38 @@ public class MainBean implements Serializable{
 
 	public void setNameColumn2(String nameColumn2) {
 		this.nameColumn2 = nameColumn2;
+	}
+
+	public boolean isShowChart() {
+		return showChart;
+	}
+
+	public void setShowChart(boolean showChart) {
+		this.showChart = showChart;
+	}
+
+	public Algorithm<List<Point>> getAlgorithm() {
+		return algorithm;
+	}
+
+	public void setAlgorithm(Algorithm<List<Point>> algorithm) {
+		this.algorithm = algorithm;
+	}
+
+	public List<Point> getListResultPoints() {
+		return listResultPoints;
+	}
+
+	public void setListResultPoints(List<Point> listResultPoints) {
+		this.listResultPoints = listResultPoints;
+	}
+
+	public CartesianChartModel getChartModel() {
+		return chartModel;
+	}
+
+	public void setChartModel(CartesianChartModel chartModel) {
+		this.chartModel = chartModel;
 	}
 	 
 }

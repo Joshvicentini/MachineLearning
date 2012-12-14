@@ -1,4 +1,4 @@
-package br.com.ufc.ia.machinelearning.rede;
+package br.com.ufc.ia.machinelearning.algorithm.network;
 
 import java.util.ArrayList;
 
