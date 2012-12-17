@@ -2,9 +2,9 @@ package br.com.ufc.ia.machinelearning.algorithm;
 
 import java.util.List;
 
-import br.com.ufc.ia.machinelearning.algorithm.Algorithm;
-import br.com.ufc.ia.machinelearning.algorithm.Parameters;
-import br.com.ufc.ia.machinelearning.algorithm.Point;
+import br.com.ufc.ia.machinelearning.spi.Algorithm;
+import br.com.ufc.ia.machinelearning.spi.Parameters;
+import br.com.ufc.ia.machinelearning.spi.Point;
 
 public class LinearRegression extends Algorithm<List<Point>> {
 

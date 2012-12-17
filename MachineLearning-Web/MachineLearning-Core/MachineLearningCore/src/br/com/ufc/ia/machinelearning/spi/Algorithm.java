@@ -1,4 +1,4 @@
-package br.com.ufc.ia.machinelearning.algorithm;
+package br.com.ufc.ia.machinelearning.spi;
 
 
 /*
