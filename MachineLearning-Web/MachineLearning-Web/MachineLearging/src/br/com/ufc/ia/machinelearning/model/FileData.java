@@ -7,8 +7,6 @@ public class FileData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private String nameValue1;
-	private String nameValue2;
 	private Double value1;
 	private Double value2;
 	
@@ -16,18 +14,6 @@ public class FileData implements Serializable {
 		this.id = id;
 	}
 	
-	public String getNameValue1() {
-		return nameValue1;
-	}
-	public void setNameValue1(String nameValue1) {
-		this.nameValue1 = nameValue1;
-	}
-	public String getNameValue2() {
-		return nameValue2;
-	}
-	public void setNameValue2(String nameValue2) {
-		this.nameValue2 = nameValue2;
-	}
 	public Double getValue1() {
 		return value1;
 	}

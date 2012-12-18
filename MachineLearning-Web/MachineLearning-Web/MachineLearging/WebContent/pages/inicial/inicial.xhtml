@@ -24,7 +24,7 @@
 				    		<p:selectOneMenu value="#{mainBean.selectedParameter}">
 				    			<f:selectItem itemLabel="Dados do RU" itemValue="1" />
 				    		</p:selectOneMenu>
-				    		<p:commandButton value="Run" action="#{mainBean.execute}" icon="ui-icon-circle-triangle-e"/>
+				    		<p:commandButton value="Run" action="#{mainBean.execute}" icon="ui-icon-circle-triangle-e" update="chartPanel"/>
 	    				</h:panelGrid>
 	    			</p:toolbarGroup>
 	    		</p:toolbar>
@@ -41,7 +41,7 @@
     					emptyMessage="No data loaded.">
     					
     					<f:facet name="header">
-    						<h:outputText value="#{mainBean.file == null ? 'File' : mainBean.file.fileName}"/>
+    						<h:outputText value="#{mainBean.file == null ? 'File' : mainBean.fileNameTruncated}"/>
     					</f:facet>
     					
     					<p:column headerText="#{mainBean.nameColumn1 == null || mainBean.nameColumn1.equals('') ? 'Value 1' : mainBean.nameColumn1}" style="width:50%;">
@@ -76,10 +76,21 @@
     			</p:panel>
     		</div>
     		<div class="rightPanel">
-    			<p:panel header="Chart" styleClass="panel">
-    				<p:lineChart id="lineChart" value="#{mainBean.chartModel}" title="Linear Chart" rendered="#{mainBean.showChart}" />
+    			<p:panel id="chartPanel" header="Chart" styleClass="panel">
+    				<p:outputPanel rendered="#{mainBean.showChart}">
+		    			<div>
+		    				<p:selectOneButton value="#{mainBean.selectedChartType}">
+		    					<p:ajax event="change" update="chartPanel" />
+		    					<f:selectItem itemLabel="Bar" itemValue="0" />
+		    					<f:selectItem itemLabel="Line" itemValue="1" />
+		    				</p:selectOneButton>
+		    			</div>
+	    				<p:barChart id="barChart" value="#{mainBean.chartModel}" zoom="true" title="Bar Chart" rendered="#{mainBean.selectedChartType == 0}" />
+	    				<p:lineChart id="lineChart" value="#{mainBean.chartModel}" zoom="true" title="Linear Chart" rendered="#{mainBean.selectedChartType == 1}" />
+    				</p:outputPanel>
     			</p:panel>
     		</div>
+    		<div class="clear"/>
     	</h:form>
     	</ui:define>
     	
@@ -87,12 +98,17 @@
 			<p:dialog header="Load File" widgetVar="fileDialog" resizable="false" draggable="false" modal="true" footer="Somente arquivos .csv">
 		    	<h:form enctype="multipart/form-data">  
 		    		<h:panelGrid columns="2">
-					    <p:fileUpload value="#{mainBean.file}" mode="simple" />
-					    <p:commandButton value="Ok" ajax="false" icon="ui-icon-check" action="#{mainBean.loadFile}" />  
+		    			<p:panelGrid columns="2">
+			    			<h:outputText value="File with header: " />
+			    			<p:selectBooleanButton offLabel="No" onLabel="Yes" value="#{mainBean.hasHeader}" />
+			    			<h:outputText value="File separator: " />
+			    			<p:inputText value="#{mainBean.fileSeparator}" style="width:40px;" />
+						    <p:fileUpload value="#{mainBean.file}" mode="simple" />
+						    <p:commandButton value="Ok" ajax="false" icon="ui-icon-check" action="#{mainBean.loadFile}" />  
+		    			</p:panelGrid>
 		    		</h:panelGrid>
 				</h:form>  
 			</p:dialog>    	
-    	
     	</ui:define>
     	      
     </ui:composition>

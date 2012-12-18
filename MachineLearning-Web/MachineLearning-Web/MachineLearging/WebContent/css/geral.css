@@ -14,6 +14,22 @@ button{
 	clear: both;
 }
 
+.header{
+	width: 900px;
+	margin: 20px auto 0;
+    font-family: Georgia,serif;
+}
+
+.header .title{
+	color: #666666;
+    font-size: 22px;
+}
+
+.header .subtitle{
+	color: #999999;
+    font-size: 14px;
+}
+
 .container{
 	width:900px;
 	margin:20px auto 0;
@@ -40,6 +56,20 @@ button{
 
 .rightPanel .panel{
 	min-height: 500px;
+}
+
+.footer{
+	color: #999999;
+    font-family: Georgia,serif;
+    font-size: 11px;
+    line-height: 20px;
+    margin: 20px auto 0;
+    text-align: right;
+    width: 900px;
+}
+
+.clear{
+	clear: both;
 }
 
 ::-webkit-input-placeholder {

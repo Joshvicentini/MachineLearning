@@ -15,10 +15,12 @@ import org.primefaces.model.UploadedFile;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
-import br.com.ufc.ia.machinelearning.algorithm.Algorithm;
-import br.com.ufc.ia.machinelearning.algorithm.Point;
 import br.com.ufc.ia.machinelearning.enumeration.MethodEnum;
 import br.com.ufc.ia.machinelearning.model.FileData;
+import br.com.ufc.ia.machinelearning.spi.Algorithm;
+import br.com.ufc.ia.machinelearning.spi.Point;
+import br.com.ufc.ia.machinelearning.util.Mensagem;
+import br.com.ufc.ia.machinelearning.util.Util;
 
 @ManagedBean(name="mainBean") @ViewScoped
 public class MainBean implements Serializable{
@@ -29,14 +31,16 @@ public class MainBean implements Serializable{
 	
 	private int selectedMethod = 0;
 	private int selectedParameter = 1;
-	private int selectedGraphic = 1;
+	private int selectedChartType = 1;
 	
 	private UploadedFile file;
 	private List<FileData> listDataModel;
 	private String nameColumn1;
 	private String nameColumn2;
+	private String fileSeparator = ",";
 	
-	private boolean showChart;
+	private boolean showChart = false;
+	private boolean hasHeader = true;
 	
 	private Algorithm<List<Point>> algorithm;
 	private List<Point> listResultPoints;
@@ -45,11 +49,14 @@ public class MainBean implements Serializable{
 	
 	public String prepareToShow(){
 		showChart = false;
+		hasHeader = true;
+		fileSeparator = ",";
 		return INICIAL;		
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void execute(){
+		chartModel = new CartesianChartModel();
 		String methodClassName = MethodEnum.values()[selectedMethod].getClassName();
 		try {
 			algorithm =  (Algorithm<List<Point>>) Class.forName("br.com.ufc.ia.machinelearning.algorithm."+methodClassName).newInstance();
@@ -95,22 +102,30 @@ public class MainBean implements Serializable{
 
 				listDataModel = new ArrayList<FileData>();
 				int numberOfColumns = 2;
-				line = item.readLine();
-				String nameColumns[] = line.split(",",-1);
-				if(nameColumns.length == numberOfColumns){
-					nameColumn1 = String.valueOf(nameColumns[0]);
-					nameColumn2 = String.valueOf(nameColumns[1]);
+				
+				if(hasHeader){
+					line = item.readLine();
+					String nameColumns[] = line.split(fileSeparator,-1);
+					if(nameColumns.length == numberOfColumns){
+						nameColumn1 = String.valueOf(nameColumns[0]);
+						nameColumn2 = String.valueOf(nameColumns[1]);
+					}
 				}
 				Long i = 0L;
 				while((line = item.readLine()) != null){
-					String values[] = line.split(",",-1);
+					String values[] = line.split(fileSeparator,-1);
 					if(values.length == numberOfColumns){
 						FileData fileData = new FileData(i);
-						fileData.setNameValue1(nameColumn1);
-						fileData.setNameValue2(nameColumn2);
-						fileData.setValue1(Double.valueOf(values[0]));
-						fileData.setValue2(Double.valueOf(values[1]));
-						listDataModel.add(fileData);
+						try{
+							fileData.setValue1(Double.valueOf(values[0]));
+							fileData.setValue2(Double.valueOf(values[1]));
+							listDataModel.add(fileData);
+						}
+						catch(NumberFormatException e){
+							Mensagem.sendErrorMessage("Invalid file data on line #"+(i+1)+"!", null);
+							listDataModel = null;
+							return;
+						}
 						i++;
 					}
 				}
@@ -119,6 +134,13 @@ public class MainBean implements Serializable{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public String getFileNameTruncated(){
+		if(file != null){
+			return Util.truncate(file.getFileName(), 20);
+		}
+		return null;
 	}
 	
 	public void setSelectedMethod(int selectedMethod){
@@ -135,14 +157,6 @@ public class MainBean implements Serializable{
 
 	public void setSelectedParameter(int selectedParameter) {
 		this.selectedParameter = selectedParameter;
-	}
-
-	public int getSelectedGraphic() {
-		return selectedGraphic;
-	}
-
-	public void setSelectedGraphic(int selectedGraphic) {
-		this.selectedGraphic = selectedGraphic;
 	}
 
 	public UploadedFile getFile() {
@@ -207,6 +221,30 @@ public class MainBean implements Serializable{
 
 	public void setChartModel(CartesianChartModel chartModel) {
 		this.chartModel = chartModel;
+	}
+
+	public boolean isHasHeader() {
+		return hasHeader;
+	}
+
+	public void setHasHeader(boolean hasHeader) {
+		this.hasHeader = hasHeader;
+	}
+
+	public String getFileSeparator() {
+		return fileSeparator;
+	}
+
+	public void setFileSeparator(String fileSeparator) {
+		this.fileSeparator = fileSeparator;
+	}
+
+	public int getSelectedChartType() {
+		return selectedChartType;
+	}
+
+	public void setSelectedChartType(int selectedChartType) {
+		this.selectedChartType = selectedChartType;
 	}
 	 
 }
