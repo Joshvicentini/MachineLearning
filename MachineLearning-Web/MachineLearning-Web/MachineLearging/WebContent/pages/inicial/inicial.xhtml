@@ -85,8 +85,8 @@
 		    					<f:selectItem itemLabel="Line" itemValue="1" />
 		    				</p:selectOneButton>
 		    			</div>
-	    				<p:barChart id="barChart" value="#{mainBean.chartModel}" zoom="true" title="Bar Chart" rendered="#{mainBean.selectedChartType == 0}" />
-	    				<p:lineChart id="lineChart" value="#{mainBean.chartModel}" zoom="true" title="Linear Chart" rendered="#{mainBean.selectedChartType == 1}" />
+	    				<p:barChart id="barChart" value="#{mainBean.chartModel}" animate="true" zoom="true" title="Bar Chart" rendered="#{mainBean.selectedChartType == 0}" />
+	    				<p:lineChart id="lineChart" value="#{mainBean.chartModel}" animate="true" zoom="true" title="Linear Chart" rendered="#{mainBean.selectedChartType == 1}" />
     				</p:outputPanel>
     			</p:panel>
     		</div>
