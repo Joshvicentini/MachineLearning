@@ -8,6 +8,18 @@
       
 	<ui:composition template="/templates/template.xhtml">
       
+      	<ui:define name="scripts">
+      		<script type="text/javascript">
+      			$(document).ready(function(){
+      				
+      				$('html').click(function(){
+      					dataTable.saveCell($('.ui-editable-column.ui-cell-editing'));
+      				});
+      				
+      			});
+      		</script>
+      	</ui:define>
+      
     	<ui:define name="title">
     		<h:outputText value="#{msg['pagina.inicial.titulo']}"></h:outputText>
     	</ui:define>
@@ -34,11 +46,30 @@
     				<center style="border-bottom:1px solid #CDCDCD;margin-bottom: 10px;">
 	    				<p:commandButton value="Load File" type="button" onclick="fileDialog.show();" icon="ui-icon-arrowthickstop-1-n" style="margin:10px 0;"/>
     				</center>
-    				<p:dataTable value="#{mainBean.listDataModel}"
+    				
+    				<p:panelGrid id="newDataInput" columns="3" style="width:100%">
+    					<h:panelGroup>
+		    				<p:inputText id="valor1" value="#{mainBean.newData.value1}" style="width:100%;" />
+		    				<p:watermark value="valor1" for="valor1" />
+    					</h:panelGroup>
+    					<h:panelGroup>
+		    				<p:inputText id="valor2" value="#{mainBean.newData.value2}" style="width:100%;" />
+		    				<p:watermark value="valor2" for="valor2" />
+    					</h:panelGroup>
+    					<p:commandButton icon="ui-icon-circle-plus" action="#{mainBean.addData}" update="newDataInput dataTable" />
+    				</p:panelGrid>
+    				
+    				<br />
+    				
+    				<p:dataTable 
+   						id="dataTable"
+    					value="#{mainBean.listDataModel}"
     					var="fileData"
     					rowKey="#{fileData.id}"
     					editable="true"
-    					emptyMessage="No data loaded.">
+    					emptyMessage="No data loaded."
+    					editMode="cell"
+    					widgetVar="dataTable">
     					
     					<f:facet name="header">
     						<h:outputText value="#{mainBean.file == null ? 'File' : mainBean.fileNameTruncated}"/>
@@ -50,7 +81,7 @@
 		    						<h:outputText value="#{fileData.value1}" />
     							</f:facet>
     							<f:facet name="input">
-		    						<p:inputText value="#{fileData.value1}" style="width:100%;" />
+		    						<p:inputText value="#{fileData.value1}" style="width:91%;" />
     							</f:facet>
     						</p:cellEditor>
     					</p:column>
@@ -61,17 +92,12 @@
 		    						<h:outputText value="#{fileData.value2}" />
     							</f:facet>
     							<f:facet name="input">
-		    						<p:inputText value="#{fileData.value2}" style="width:100%;" />
+		    						<p:inputText value="#{fileData.value2}" style="width:91%;" />
     							</f:facet>
     						</p:cellEditor>
     					</p:column>
     					
-    					<p:column>
-    						<p:rowEditor />
-    					</p:column>
-    					
-    					
-    					<p:ajax event="rowEdit" update="@this" ></p:ajax>
+    					<p:ajax event="cellEdit" listener="#{mainBean.onCellEdit}" update="@this" ></p:ajax>
     				</p:dataTable>
     			</p:panel>
     		</div>
@@ -95,13 +121,13 @@
     	</ui:define>
     	
     	<ui:define name="dialogs">
-			<p:dialog header="Load File" widgetVar="fileDialog" resizable="false" draggable="false" modal="true" footer="Somente arquivos .csv">
+			<p:dialog header="Load File" widgetVar="fileDialog" resizable="false" draggable="false" modal="true" footer="Only .csv files">
 		    	<h:form enctype="multipart/form-data">  
 		    		<h:panelGrid columns="2">
 		    			<p:panelGrid columns="2">
 			    			<h:outputText value="File with header: " />
 			    			<p:selectBooleanButton offLabel="No" onLabel="Yes" value="#{mainBean.hasHeader}" />
-			    			<h:outputText value="File separator: " />
+			    			<h:outputText value="Column separator: " />
 			    			<p:inputText value="#{mainBean.fileSeparator}" style="width:40px;" />
 						    <p:fileUpload value="#{mainBean.file}" mode="simple" />
 						    <p:commandButton value="Ok" ajax="false" icon="ui-icon-check" action="#{mainBean.loadFile}" />  

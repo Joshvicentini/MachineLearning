@@ -11,6 +11,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
@@ -35,6 +36,8 @@ public class MainBean implements Serializable{
 	
 	private UploadedFile file;
 	private List<FileData> listDataModel;
+	private FileData newData = new FileData(0L);
+	private Long newDataRowKey = 0L;
 	private String nameColumn1;
 	private String nameColumn2;
 	private String fileSeparator = ",";
@@ -86,8 +89,16 @@ public class MainBean implements Serializable{
 		}
 	}
 	
-	public void plot(){
-		
+	public void addData(){
+		if(newData != null){
+			newData.setId(newDataRowKey);
+			if(listDataModel == null){
+				listDataModel = new ArrayList<FileData>();
+			}
+			listDataModel.add(newData);
+			newDataRowKey++;
+			newData = new FileData(newDataRowKey);
+		}
 	}
 	
 	public void loadFile(){
@@ -129,11 +140,23 @@ public class MainBean implements Serializable{
 						i++;
 					}
 				}
+				if(listDataModel != null){
+					newDataRowKey = Long.valueOf(listDataModel.size());
+				}
 			}
 			catch(IOException e){
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void onCellEdit(CellEditEvent event){
+		Object oldValue = event.getOldValue();  
+        Object newValue = event.getNewValue();  
+          
+        if(newValue != null && !newValue.equals(oldValue)) {  
+        	System.out.println("valor da celular modificado de "+ oldValue +" para "+ newValue + "!");
+        }
 	}
 	
 	public String getFileNameTruncated(){
@@ -245,6 +268,22 @@ public class MainBean implements Serializable{
 
 	public void setSelectedChartType(int selectedChartType) {
 		this.selectedChartType = selectedChartType;
+	}
+
+	public FileData getNewData() {
+		return newData;
+	}
+
+	public void setNewData(FileData newData) {
+		this.newData = newData;
+	}
+
+	public Long getNewDataRowKey() {
+		return newDataRowKey;
+	}
+
+	public void setNewDataRowKey(Long newDataRowKey) {
+		this.newDataRowKey = newDataRowKey;
 	}
 	 
 }
