@@ -148,12 +148,12 @@ public class KMeans {
     public Matrix run(Matrix X, Matrix centroids, int maxIters, boolean showProgress) {
     	int[] indexArray = new int[X.getRowDimension()];
     	int K = centroids.getRowDimension();
-		double[][] Xvals = X.getArray();
+//		double[][] Xvals = X.getArray();
         
  
     	for (int i = 0; i < maxIters; i++) {
     		if (showProgress == true) {
-    			double[][] centroidsvals = centroids.getArray();
+//    			double[][] centroidsvals = centroids.getArray();
                 printCentroids(centroids, i);
     		}
     		indexArray = findClosestCentroids(X, centroids);

@@ -10,13 +10,20 @@ import br.com.ufc.ia.machinelearning.spi.Point;
 
 public class LinearRegression extends Algorithm<List<Point>> {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public void execute(List<Point> source, Parameters parameters) {
+		this.report.addReport("Executing method Linear Regression...\n");
 		result = new ArrayList<Point>();
 		for(int i =0; i < 50;i++){
 			Random rand = new Random();
-			result.add(new Point(rand.nextInt(100),rand.nextInt(100)));
+			double x = rand.nextInt(100);
+			double y = rand.nextInt(100);
+			result.add(new Point(x,y));
+			this.report.addReport("Added calculated point P(" + x + ", " + y + ").\n");
 		}
+		this.report.addReport("Executing method Linear Regression...\n");
 	}
 
 }

@@ -69,13 +69,16 @@
     					editable="true"
     					emptyMessage="No data loaded."
     					editMode="cell"
-    					widgetVar="dataTable">
+    					widgetVar="dataTable"
+    					scrollable="true"
+    					scrollHeight="250"
+    					style="border:1px solid #E1E1E1">
     					
     					<f:facet name="header">
     						<h:outputText value="#{mainBean.file == null ? 'File' : mainBean.fileNameTruncated}"/>
     					</f:facet>
     					
-    					<p:column headerText="#{mainBean.nameColumn1 == null || mainBean.nameColumn1.equals('') ? 'Value 1' : mainBean.nameColumn1}" style="width:50%;">
+    					<p:column headerText="#{mainBean.nameColumn1 == null || mainBean.nameColumn1.equals('') ? 'Value 1' : mainBean.nameColumn1}" style="width:40%;">
     						<p:cellEditor>
     							<f:facet name="output">
 		    						<h:outputText value="#{fileData.value1}" />
@@ -86,7 +89,7 @@
     						</p:cellEditor>
     					</p:column>
     					
-    					<p:column headerText="#{mainBean.nameColumn2 == null || mainBean.nameColumn2.equals('') ? 'Value 2' : mainBean.nameColumn2}" style="width:50%;">
+    					<p:column headerText="#{mainBean.nameColumn2 == null || mainBean.nameColumn2.equals('') ? 'Value 2' : mainBean.nameColumn2}" style="width:40%;">
     						<p:cellEditor>
     							<f:facet name="output">
 		    						<h:outputText value="#{fileData.value2}" />
@@ -97,22 +100,41 @@
     						</p:cellEditor>
     					</p:column>
     					
+    					<p:column style="width:20%;">
+    						<p:commandButton icon="ui-icon-circle-close" action="#{mainBean.removeData}" update="dataTable" styleClass="noBG">
+    							<f:setPropertyActionListener target="#{mainBean.removedData}" value="#{fileData}" />
+    						</p:commandButton>
+    					</p:column>
+    					
+    					<f:facet name="footer">
+    						<h:outputText value="Input data"/>
+    					</f:facet>
+    					
     					<p:ajax event="cellEdit" listener="#{mainBean.onCellEdit}" update="@this" ></p:ajax>
     				</p:dataTable>
     			</p:panel>
     		</div>
     		<div class="rightPanel">
-    			<p:panel id="chartPanel" header="Chart" styleClass="panel">
-    				<p:outputPanel rendered="#{mainBean.showChart}">
-		    			<div>
-		    				<p:selectOneButton value="#{mainBean.selectedChartType}">
-		    					<p:ajax event="change" update="chartPanel" />
-		    					<f:selectItem itemLabel="Bar" itemValue="0" />
-		    					<f:selectItem itemLabel="Line" itemValue="1" />
-		    				</p:selectOneButton>
-		    			</div>
-	    				<p:barChart id="barChart" value="#{mainBean.chartModel}" animate="true" zoom="true" title="Bar Chart" rendered="#{mainBean.selectedChartType == 0}" />
-	    				<p:lineChart id="lineChart" value="#{mainBean.chartModel}" animate="true" zoom="true" title="Linear Chart" rendered="#{mainBean.selectedChartType == 1}" />
+    			<p:panel id="chartPanel" header="Results" styleClass="panel">
+    				<p:outputPanel rendered="#{mainBean.showResults}">
+	    				<p:accordionPanel>
+	    					<p:tab title="Charts">
+				    			<div>
+				    				<p:selectOneButton value="#{mainBean.selectedChartType}">
+				    					<p:ajax event="change" update="chartPanel" />
+				    					<f:selectItem itemLabel="Bar" itemValue="0" />
+				    					<f:selectItem itemLabel="Line" itemValue="1" />
+				    				</p:selectOneButton>
+				    			</div>
+				    			<p:outputPanel id="chartPanel">
+				    				<p:barChart id="barChart" value="#{mainBean.chartModel}" animate="true" zoom="true" title="Bar Chart" rendered="#{mainBean.selectedChartType == 0}" />
+				    				<p:lineChart id="lineChart" value="#{mainBean.chartModel}" animate="true" zoom="true" title="Linear Chart" rendered="#{mainBean.selectedChartType == 1}" />
+				    			</p:outputPanel>
+	    					</p:tab>
+	    					<p:tab title="Output">
+    							<p:inputTextarea readonly="true" value="#{mainBean.output}" cols="100" autoResize="false" rows="15" />
+	    					</p:tab>
+	    				</p:accordionPanel>
     				</p:outputPanel>
     			</p:panel>
     		</div>

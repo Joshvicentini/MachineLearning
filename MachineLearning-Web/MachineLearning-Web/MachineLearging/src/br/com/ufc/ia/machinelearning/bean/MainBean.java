@@ -37,21 +37,23 @@ public class MainBean implements Serializable{
 	private UploadedFile file;
 	private List<FileData> listDataModel;
 	private FileData newData = new FileData(0L);
+	private FileData removedData;
 	private Long newDataRowKey = 0L;
 	private String nameColumn1;
 	private String nameColumn2;
 	private String fileSeparator = ",";
 	
-	private boolean showChart = false;
+	private boolean showResults = false;
 	private boolean hasHeader = true;
 	
 	private Algorithm<List<Point>> algorithm;
 	private List<Point> listResultPoints;
+	private String output;
 
 	private CartesianChartModel chartModel;
 	
 	public String prepareToShow(){
-		showChart = false;
+		showResults = false;
 		hasHeader = true;
 		fileSeparator = ",";
 		return INICIAL;		
@@ -69,13 +71,14 @@ public class MainBean implements Serializable{
 			}
 			algorithm.execute(listPoints, null);
 			listResultPoints = algorithm.getResult(); 
+			output = algorithm.getReport().getAllReports();
 			
 			ChartSeries chartSerie = new ChartSeries();
 			for(Point point : listResultPoints){
 				chartSerie.set(point.x, point.y);
 			}
 			chartModel.addSeries(chartSerie);
-			showChart = true;
+			showResults = true;
 			
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -98,6 +101,14 @@ public class MainBean implements Serializable{
 			listDataModel.add(newData);
 			newDataRowKey++;
 			newData = new FileData(newDataRowKey);
+		}
+	}
+	
+	public void removeData(){
+		if(removedData != null){
+			listDataModel.remove(removedData);
+			newDataRowKey++;
+			removedData= null;
 		}
 	}
 	
@@ -214,14 +225,6 @@ public class MainBean implements Serializable{
 		this.nameColumn2 = nameColumn2;
 	}
 
-	public boolean isShowChart() {
-		return showChart;
-	}
-
-	public void setShowChart(boolean showChart) {
-		this.showChart = showChart;
-	}
-
 	public Algorithm<List<Point>> getAlgorithm() {
 		return algorithm;
 	}
@@ -284,6 +287,30 @@ public class MainBean implements Serializable{
 
 	public void setNewDataRowKey(Long newDataRowKey) {
 		this.newDataRowKey = newDataRowKey;
+	}
+
+	public String getOutput() {
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
+	public boolean isShowResults() {
+		return showResults;
+	}
+
+	public void setShowResults(boolean showResults) {
+		this.showResults = showResults;
+	}
+
+	public FileData getRemovedData() {
+		return removedData;
+	}
+
+	public void setRemovedData(FileData removedData) {
+		this.removedData = removedData;
 	}
 	 
 }

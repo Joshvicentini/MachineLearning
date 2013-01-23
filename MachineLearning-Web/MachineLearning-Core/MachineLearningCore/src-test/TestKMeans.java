@@ -30,6 +30,7 @@ public class TestKMeans {
  
 				count++;
 			}
+			input.close();
         } catch (Exception e) {
         	System.out.println("Could not open data/k_means_example.txt");
         }

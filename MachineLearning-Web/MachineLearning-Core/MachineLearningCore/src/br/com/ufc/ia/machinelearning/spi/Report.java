@@ -1,4 +1,5 @@
 package br.com.ufc.ia.machinelearning.spi;
+import java.io.Serializable;
 import java.util.Stack;
 
 /*
@@ -8,10 +9,16 @@ import java.util.Stack;
  * O mesmo eh utilizado nas classes dos algoritmos, de forma que como um algoritmo
  * pode demorar muito podemos ver em que passo o algoritmo se encontra.
  */
-public class Report {
+public class Report implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Stack<String> reports = new Stack<String>();
 
+	
+	public Report() {
+		this.reports = new Stack<String>();
+	}
 	/*
 	 * @return report
 	 */
@@ -30,7 +37,15 @@ public class Report {
 	 * @return reports
 	 */
 	public String getAllReports() {
-		return reports.toString();
+		StringBuilder sb = new StringBuilder();
+		for(Object report : this.reports.toArray()){
+			sb.append((String)report + "\n");
+		}
+		return sb.toString();
+	}
+	
+	public void addReport(String report){
+		this.reports.add(report);
 	}
 
 	@Override
