@@ -16,6 +16,9 @@
       					dataTable.saveCell($('.ui-editable-column.ui-cell-editing'));
       				});
       				
+      				prepareToShow();
+      				updateParameters();
+      				
       			});
       		</script>
       	</ui:define>
@@ -25,13 +28,15 @@
     	</ui:define>
     	
     	<ui:define name="content">
-    	<h:form>
+    	<h:form id="form">
     		<div class="superiorPanel">
 	    		<p:toolbar>
 	    			<p:toolbarGroup align="left">
 	    				<h:panelGrid columns="3" cellpadding="5">
-				    		<p:selectOneMenu value="#{mainBean.selectedMethod}">
+				    		<p:selectOneMenu id="selectMethod" value="#{mainBean.selectedMethod}">
+				    			<f:selectItem itemLabel="Select Method" itemValue="-1" />	
 				    			<f:selectItems value="#{autocompleteBean.listMethods}" />
+				    			<p:ajax event="change" update="selectMethod outputPanelParameters" listener="#{mainBean.populateParameters}"/>
 				    		</p:selectOneMenu>
 				    		<p:selectOneMenu value="#{mainBean.selectedParameter}">
 				    			<f:selectItem itemLabel="Dados do RU" itemValue="1" />
@@ -40,6 +45,11 @@
 	    				</h:panelGrid>
 	    			</p:toolbarGroup>
 	    		</p:toolbar>
+	    		
+	    		<p:outputPanel id="outputPanelParameters" autoUpdate="true">
+		    		<p:panel id="panelParameters" header="Parameters" binding="#{mainBean.panelParameters}" rendered="#{mainBean.showParameters}" style="min-height:40px;">
+		    		</p:panel>
+	    		</p:outputPanel>
     		</div>
     		<div class="leftPanel">
     			<p:panel header="Data" styleClass="panel">
@@ -138,7 +148,7 @@
     				</p:outputPanel>
     			</p:panel>
     		</div>
-    		<div class="clear"/>
+    		<div class="clear"> </div>
     	</h:form>
     	</ui:define>
     	
@@ -157,6 +167,13 @@
 		    		</h:panelGrid>
 				</h:form>  
 			</p:dialog>    	
+    	</ui:define>
+    	
+    	<ui:define name="remoteCommands">
+    	
+    		<p:remoteCommand name="prepareToShow" action="#{mainBean.prepareToShow}" />
+    		<p:remoteCommand name="updateParameters" update=":form:panelParameters" />
+    	
     	</ui:define>
     	      
     </ui:composition>

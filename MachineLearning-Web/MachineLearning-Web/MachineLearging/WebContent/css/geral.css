@@ -91,3 +91,7 @@ button{
 .noBG.ui-state-hover .ui-icon, .noBG.ui-state-focus .ui-icon {
     background-image: url("/MachineLearning/icons/ui-icons_cd0a0a_256x240.png") !important;
 }
+
+.parameterInput{
+	margin:10px 10px 0 0;
+}

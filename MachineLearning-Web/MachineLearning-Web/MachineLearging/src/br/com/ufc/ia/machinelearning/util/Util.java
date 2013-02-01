@@ -25,4 +25,11 @@ public class Util
 	  }
 	  return input;
   }
+  
+  public static String normilizeId(String input){
+	  input = input.trim();
+	  input = input.replace(" ", "");
+	  input = input.substring(0,1).toLowerCase() + input.substring(1);
+	  return input;
+  }
 }

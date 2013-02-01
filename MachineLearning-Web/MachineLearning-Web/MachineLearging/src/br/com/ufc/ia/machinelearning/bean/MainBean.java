@@ -11,6 +11,9 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import org.primefaces.component.inputtext.InputText;
+import org.primefaces.component.panel.Panel;
+import org.primefaces.component.watermark.Watermark;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.chart.CartesianChartModel;
@@ -30,8 +33,8 @@ public class MainBean implements Serializable{
 
 	private static final String INICIAL = "inicial";
 	
-	private int selectedMethod = 0;
-	private int selectedParameter = 1;
+	private Integer selectedMethod = null;
+	private Integer selectedParameter = 1;
 	private int selectedChartType = 1;
 	
 	private UploadedFile file;
@@ -44,13 +47,18 @@ public class MainBean implements Serializable{
 	private String fileSeparator = ",";
 	
 	private boolean showResults = false;
+	private boolean showParameters = false;
 	private boolean hasHeader = true;
 	
 	private Algorithm<List<Point>> algorithm;
 	private List<Point> listResultPoints;
 	private String output;
+	private String objTest;
 
 	private CartesianChartModel chartModel;
+	private Panel panelParameters = new Panel();
+	
+	private MethodEnum method;
 	
 	public String prepareToShow(){
 		showResults = false;
@@ -59,15 +67,61 @@ public class MainBean implements Serializable{
 		return INICIAL;		
 	}
 	
+	public void populateParameters(){
+		if(selectedMethod != null && selectedMethod != -1){
+			method = MethodEnum.values()[selectedMethod];
+			if(method.getParametersNames().length > 0){
+				showParameters = true;
+				
+				panelParameters.setHeader(method.toString() + " Parameters");
+				panelParameters.getChildren().clear();
+				for(int i = 0; i < method.getParametersNames().length; i++){
+					String parameterName = method.getParametersNames()[i];
+					parameterName = Util.normilizeId(parameterName);
+					
+					InputText input = new InputText();
+					input.setId(parameterName);
+					input.setStyleClass("parameterInput");
+					
+					Watermark watermark = new Watermark();
+					watermark.setFor(parameterName);
+					watermark.setValue(method.getParametersNames()[i]);
+					
+					panelParameters.getChildren().add(input);
+					panelParameters.getChildren().add(watermark);
+				}
+			}
+			else{
+				showParameters = false;
+				panelParameters.getChildren().clear();
+			}
+		}
+		else{
+			showParameters = false;
+			panelParameters.getChildren().clear();
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void execute(){
+		if(listDataModel == null || listDataModel.isEmpty()){
+			Mensagem.sendErrorMessage("No data inserted", null);
+			return;
+		}
+		if(selectedMethod == null || selectedMethod == -1){
+			Mensagem.sendErrorMessage("No method selected", null);
+			return;
+		}
 		chartModel = new CartesianChartModel();
-		String methodClassName = MethodEnum.values()[selectedMethod].getClassName();
 		try {
-			algorithm =  (Algorithm<List<Point>>) Class.forName("br.com.ufc.ia.machinelearning.algorithm."+methodClassName).newInstance();
+			algorithm =  (Algorithm<List<Point>>) Class.forName("br.com.ufc.ia.machinelearning.algorithm."+method.getClassName()).newInstance();
 			List<Point> listPoints = new ArrayList<Point>();
 			for(FileData fileData:listDataModel){
 				listPoints.add(new Point(fileData.getValue1(), fileData.getValue2()));
+			}
+			for(int i = 0; i < method.getParametersNames().length; i++){
+				String parameter = Util.normilizeId(method.getParametersNames()[i]);
+				algorithm.getParameters().addParam(parameter, ((InputText)panelParameters.getChildren().get(i*2)).getValue());
 			}
 			algorithm.execute(listPoints, null);
 			listResultPoints = algorithm.getResult(); 
@@ -177,22 +231,6 @@ public class MainBean implements Serializable{
 		return null;
 	}
 	
-	public void setSelectedMethod(int selectedMethod){
-		this.selectedMethod = selectedMethod;
-	}
-	
-	public int getSelectedMethod(){
-		return selectedMethod;
-	}
-
-	public int getSelectedParameter() {
-		return selectedParameter;
-	}
-
-	public void setSelectedParameter(int selectedParameter) {
-		this.selectedParameter = selectedParameter;
-	}
-
 	public UploadedFile getFile() {
 		return file;
 	}
@@ -311,6 +349,54 @@ public class MainBean implements Serializable{
 
 	public void setRemovedData(FileData removedData) {
 		this.removedData = removedData;
+	}
+
+	public Panel getPanelParameters() {
+		return panelParameters;
+	}
+
+	public void setPanelParameters(Panel panelParameters) {
+		this.panelParameters = panelParameters;
+	}
+
+	public String getObjTest() {
+		return objTest;
+	}
+
+	public void setObjTest(String objTest) {
+		this.objTest = objTest;
+	}
+
+	public boolean isShowParameters() {
+		return showParameters;
+	}
+
+	public void setShowParameters(boolean showParameters) {
+		this.showParameters = showParameters;
+	}
+
+	public Integer getSelectedMethod() {
+		return selectedMethod;
+	}
+
+	public void setSelectedMethod(Integer selectedMethod) {
+		this.selectedMethod = selectedMethod;
+	}
+
+	public Integer getSelectedParameter() {
+		return selectedParameter;
+	}
+
+	public void setSelectedParameter(Integer selectedParameter) {
+		this.selectedParameter = selectedParameter;
+	}
+
+	public MethodEnum getMethod() {
+		return method;
+	}
+
+	public void setMethod(MethodEnum method) {
+		this.method = method;
 	}
 	 
 }

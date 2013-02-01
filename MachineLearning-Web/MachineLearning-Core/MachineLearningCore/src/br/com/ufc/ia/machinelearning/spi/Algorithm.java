@@ -21,6 +21,7 @@ public abstract class Algorithm<T> implements Serializable {
 	
 	public Algorithm() {
 		this.report = new Report();
+		this.parameters = new Parameters();
 	}
 	
 	public T getResult(){
@@ -55,6 +56,4 @@ public abstract class Algorithm<T> implements Serializable {
 		this.identifier = identifier;
 	}
 	
-	
-
 }
